@@ -5,3 +5,5 @@ __pycache__
 # env folder
 spark-env
 
+# Data folder
+data/
