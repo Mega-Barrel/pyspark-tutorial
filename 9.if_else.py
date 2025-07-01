@@ -57,31 +57,31 @@ if __name__ == "__main__":
     print(f'Total records in df1: {df.count()}')
 
     # Case when statement
-    # df_case = (
-    #     df.withColumn(
-    #         'is_adult',
-    #         when(col('age') >= 18, 'Adult').
-    #         when(col('age') < 18, 'Not Adult').
-    #         otherwise('NA')
-    #     )
-    # )
-    # df_case.show()
+    df_case = (
+        df.withColumn(
+            'is_adult',
+            when(col('age') >= 18, 'Adult').
+            when(col('age') < 18, 'Not Adult').
+            otherwise('NA')
+        )
+    )
+    df_case.show()
 
-    # df_handle_null_case = (
-    #     df.
-    #     withColumn(
-    #         'is_adult',
-    #         when(col('age').isNull(), lit(10)).
-    #         otherwise(col('age'))
-    #     ).
-    #     withColumn(
-    #         'is_adult',
-    #         when(col('is_adult') >= 18, 'Adult').
-    #         when(col('is_adult') < 18, 'Not Adult').
-    #         otherwise('NA')
-    #     )
-    # )
-    # df_handle_null_case.show()
+    df_handle_null_case = (
+        df.
+        withColumn(
+            'is_adult',
+            when(col('age').isNull(), lit(10)).
+            otherwise(col('age'))
+        ).
+        withColumn(
+            'is_adult',
+            when(col('is_adult') >= 18, 'Adult').
+            when(col('is_adult') < 18, 'Not Adult').
+            otherwise('NA')
+        )
+    )
+    df_handle_null_case.show()
 
     df_major_minor = (
         df.
