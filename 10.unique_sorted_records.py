@@ -20,7 +20,7 @@ if __name__ == "__main__":
     spark = (
         SparkSession.
         builder.
-        appName('JobStageTaskExample').
+        appName('tutorial').
         getOrCreate()
     )
 
