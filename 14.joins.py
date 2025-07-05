@@ -103,21 +103,21 @@ if __name__ == "__main__":
     product_df.show()
     print(f"Total records in product_df: {product_df.count()}")
 
-    # joined_df = customer_df.alias("c").join(
-    #     sales_df.alias("s"),
-    #     on = "customer_id",
-    #     how = "inner"
-    # )
-    # joined_df.show()
+    joined_df = customer_df.alias("c").join(
+        sales_df.alias("s"),
+        on = "customer_id",
+        how = "inner"
+    )
+    joined_df.show()
 
-    # print("Print all customerid who have not purchased a product")
-    # left_joined_df = customer_df.alias("c").join(
-    #     sales_df.alias("s"),
-    #     on = "customer_id",
-    #     how = "left"
-    # )
-    # result_df = left_joined_df.filter(col("s.customer_id").isNull())
-    # result_df.select(col("customer_id")).distinct().show()
+    print("Print all customerid who have not purchased a product")
+    left_joined_df = customer_df.alias("c").join(
+        sales_df.alias("s"),
+        on = "customer_id",
+        how = "left"
+    )
+    result_df = left_joined_df.filter(col("s.customer_id").isNull())
+    result_df.select(col("customer_id")).distinct().show()
 
     print("Left anti join")
     left_anti_df = customer_df.alias("c").join(
