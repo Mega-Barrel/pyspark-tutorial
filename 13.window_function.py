@@ -114,166 +114,166 @@ if __name__ == "__main__":
 
     emp_df = create_dataframe(spark_session=spark, data=emp_data, schema=emp_schema)
 
-    # df.show()
-    # print(f"Total records in df: {df.count()}")
-    # print()
+    df.show()
+    print(f"Total records in df: {df.count()}")
+    print()
 
-    # product_df.show()
-    # product_df.printSchema()
-    # print(f"Total records in product_df: {product_df.count()}")
+    product_df.show()
+    product_df.printSchema()
+    print(f"Total records in product_df: {product_df.count()}")
 
-    # row_num_rnk_dense_rnk_window = Window.partitionBy(col("department")).orderBy(col("salary").asc())
-    # row_num_rnk_dense_rnk_df = (
-    #     df.withColumn(
-    #         "row_number",
-    #         row_number().over(row_num_rnk_dense_rnk_window)
-    #     ).
-    #     withColumn(
-    #         "rank",
-    #         rank().over(row_num_rnk_dense_rnk_window)
-    #     ).
-    #     withColumn(
-    #         "dense_rank",
-    #         dense_rank().over(row_num_rnk_dense_rnk_window)
-    #     )
-    # )
-    # row_num_rnk_dense_rnk_df.show()
-
-
-    # print("Question 1: Calculate salary % for every employee across department")
-    # dept_partition = Window.partitionBy(col("department"))
-    # partition_df = (
-    #     df.withColumn(
-    #         "total_dept_salary",
-    #         pysum(col("salary")).over(dept_partition)
-    #     ).withColumn(
-    #         "salary %",
-    #         ((col("salary") * 100.00) / col("total_dept_salary")).cast(DecimalType(10, 2))
-    #     )
-    # )
-    # partition_df.show()
+    row_num_rnk_dense_rnk_window = Window.partitionBy(col("department")).orderBy(col("salary").asc())
+    row_num_rnk_dense_rnk_df = (
+        df.withColumn(
+            "row_number",
+            row_number().over(row_num_rnk_dense_rnk_window)
+        ).
+        withColumn(
+            "rank",
+            rank().over(row_num_rnk_dense_rnk_window)
+        ).
+        withColumn(
+            "dense_rank",
+            dense_rank().over(row_num_rnk_dense_rnk_window)
+        )
+    )
+    row_num_rnk_dense_rnk_df.show()
 
 
-    # print("Question 2: Return Top 2 employee with highest salary department wise")
-    # top_2_window = Window.partitionBy(col("department")).orderBy(col("salary").desc())
-    # top_2_df = (
-    #     df.
-    #     withColumn(
-    #         "top_2_rnk",
-    #         dense_rank().over(window=top_2_window)
-    #     ).filter(col("top_2_rnk").isin(1, 2))
-    # )
-    # top_2_df.show()
+    print("Question 1: Calculate salary % for every employee across department")
+    dept_partition = Window.partitionBy(col("department"))
+    partition_df = (
+        df.withColumn(
+            "total_dept_salary",
+            pysum(col("salary")).over(dept_partition)
+        ).withColumn(
+            "salary %",
+            ((col("salary") * 100.00) / col("total_dept_salary")).cast(DecimalType(10, 2))
+        )
+    )
+    partition_df.show()
 
 
-    # print("Question 3: Last 6 months product sales %")
-    # product_window = Window.partitionBy(col("name"))
-    # product_lag_df = (
-    #     product_df.
-    #     withColumn(
-    #         "total_sales",
-    #         pysum(col("sales")).over(window=product_window)
-    #     ).
-    #     withColumn(
-    #         "sales %",
-    #         pyround((col("sales") / col("total_sales")) * 100.00, 2)
-    #     ).orderBy(col("name").asc(), col("date").asc())
-    # )
-    # product_lag_df.show()
+    print("Question 2: Return Top 2 employee with highest salary department wise")
+    top_2_window = Window.partitionBy(col("department")).orderBy(col("salary").desc())
+    top_2_df = (
+        df.
+        withColumn(
+            "top_2_rnk",
+            dense_rank().over(window=top_2_window)
+        ).filter(col("top_2_rnk").isin(1, 2))
+    )
+    top_2_df.show()
 
 
-    # print("Question 4: MoM sales % change product wise")
-    # product_window = Window.partitionBy(col("name")).orderBy(col("date").asc())
-    # product_lag_df = (
-    #     product_df.
-    #     withColumn(
-    #         "prev_mnth_sales",
-    #         lag(col("sales"), 1).over(window=product_window)
-    #     ).
-    #     withColumn(
-    #         "sales_change",
-    #         pyround(((col("sales") - col("prev_mnth_sales")) / col("prev_mnth_sales")) * 100.00, 2)
-    #     ).
-    #     filter(col("prev_mnth_sales").isNotNull())
-    # )
-    # product_lag_df.show()
+    print("Question 3: Last 6 months product sales %")
+    product_window = Window.partitionBy(col("name"))
+    product_lag_df = (
+        product_df.
+        withColumn(
+            "total_sales",
+            pysum(col("sales")).over(window=product_window)
+        ).
+        withColumn(
+            "sales %",
+            pyround((col("sales") / col("total_sales")) * 100.00, 2)
+        ).orderBy(col("name").asc(), col("date").asc())
+    )
+    product_lag_df.show()
 
 
-    # print("Question 5: Find difference in sales from first_month to latest_month product wise")
-    # product_window = Window.partitionBy(col("name")).orderBy(col("date").asc()).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
-    # product_lag_df = (
-    #     product_df.
-    #     withColumn(
-    #         "first_mnth_sales",
-    #         first(col("sales")).over(window=product_window)
-    #     ).
-    #     withColumn(
-    #         "last_mnth_sales",
-    #         last(col("sales")).over(window=product_window)
-    #     ).
-    #     withColumn(
-    #         "sales_change",
-    #         pyround(((col("last_mnth_sales") - col("first_mnth_sales")) / col("first_mnth_sales")) * 100.00, 2)
-    #     )
-    # )
-    # product_lag_df.show()
+    print("Question 4: MoM sales % change product wise")
+    product_window = Window.partitionBy(col("name")).orderBy(col("date").asc())
+    product_lag_df = (
+        product_df.
+        withColumn(
+            "prev_mnth_sales",
+            lag(col("sales"), 1).over(window=product_window)
+        ).
+        withColumn(
+            "sales_change",
+            pyround(((col("sales") - col("prev_mnth_sales")) / col("prev_mnth_sales")) * 100.00, 2)
+        ).
+        filter(col("prev_mnth_sales").isNotNull())
+    )
+    product_lag_df.show()
 
 
-    # print("Question 6: Find employees who have not completed 8 hours in office")
-    # emp_df = (
-    #     emp_df.
-    #     withColumn(
-    #         "timestamp",
-    #         from_unixtime(
-    #             unix_timestamp(
-    #                 expr("CONCAT(date, ' ', time)"),
-    #                 "dd-MM-yyyy HH:mm"
-    #             )
-    #         )
-    #     )
-    # )
-    # emp_ofc_window = Window.partitionBy(col("id"), col("date")).orderBy(col("timestamp").asc()).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
-    # emp_time_df = (
-    #     emp_df.
-    #     withColumn(
-    #         "entry_time",
-    #         first(col("timestamp")).over(window=emp_ofc_window)
-    #     ).
-    #     withColumn(
-    #         "exit_time",
-    #         last(col("timestamp")).over(window=emp_ofc_window)
-    #     ).
-    #     # convert to timestamp
-    #     withColumn(
-    #         "entry_time",
-    #         to_timestamp(col("entry_time"), "yyyy-MM-dd HH:mm:ss")
-    #     ).
-    #     # convert to timestamp
-    #     withColumn(
-    #         "exit_time",
-    #         to_timestamp(col("exit_time"), "yyyy-MM-dd HH:mm:ss")
-    #     ).
-    #     # final
-    #     withColumn(
-    #         "total_time",
-    #         (col("exit_time") - col("entry_time")).cast("long")
-    #     )
-    # ).filter((col("total_time") / 60 / 60) < 8)
-    # # show emp_time_df
-    # (
-    #     emp_time_df.
-    #     select(
-    #         col("id"),
-    #         col("date"),
-    #         col("name")
-    #     ).
-    #     distinct().
-    #     orderBy(
-    #         col("date").
-    #         asc()
-    #     ).
-    #     show()
-    # )
+    print("Question 5: Find difference in sales from first_month to latest_month product wise")
+    product_window = Window.partitionBy(col("name")).orderBy(col("date").asc()).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+    product_lag_df = (
+        product_df.
+        withColumn(
+            "first_mnth_sales",
+            first(col("sales")).over(window=product_window)
+        ).
+        withColumn(
+            "last_mnth_sales",
+            last(col("sales")).over(window=product_window)
+        ).
+        withColumn(
+            "sales_change",
+            pyround(((col("last_mnth_sales") - col("first_mnth_sales")) / col("first_mnth_sales")) * 100.00, 2)
+        )
+    )
+    product_lag_df.show()
+
+
+    print("Question 6: Find employees who have not completed 8 hours in office")
+    emp_df = (
+        emp_df.
+        withColumn(
+            "timestamp",
+            from_unixtime(
+                unix_timestamp(
+                    expr("CONCAT(date, ' ', time)"),
+                    "dd-MM-yyyy HH:mm"
+                )
+            )
+        )
+    )
+    emp_ofc_window = Window.partitionBy(col("id"), col("date")).orderBy(col("timestamp").asc()).rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+    emp_time_df = (
+        emp_df.
+        withColumn(
+            "entry_time",
+            first(col("timestamp")).over(window=emp_ofc_window)
+        ).
+        withColumn(
+            "exit_time",
+            last(col("timestamp")).over(window=emp_ofc_window)
+        ).
+        # convert to timestamp
+        withColumn(
+            "entry_time",
+            to_timestamp(col("entry_time"), "yyyy-MM-dd HH:mm:ss")
+        ).
+        # convert to timestamp
+        withColumn(
+            "exit_time",
+            to_timestamp(col("exit_time"), "yyyy-MM-dd HH:mm:ss")
+        ).
+        # final
+        withColumn(
+            "total_time",
+            (col("exit_time") - col("entry_time")).cast("long")
+        )
+    ).filter((col("total_time") / 60 / 60) < 8)
+    # show emp_time_df
+    (
+        emp_time_df.
+        select(
+            col("id"),
+            col("date"),
+            col("name")
+        ).
+        distinct().
+        orderBy(
+            col("date").
+            asc()
+        ).
+        show()
+    )
 
 
     print("Question 7: Last 3 months avg sales with current sales")
